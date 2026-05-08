@@ -22,11 +22,27 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: "https://task-management-app.onrender.com,https://www.task-management-app.onrender.com"
+        value: "*"
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "30"
       - key: REFRESH_TOKEN_EXPIRE_DAYS
         value: "7"
+
+  - type: web
+    name: task-management-ui
+    env: static
+    region: oregon
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        value: "https://backendassignment-xru2.onrender.com"
 
 databases:
   - name: task_manager_db

@@ -3,11 +3,13 @@ FastAPI application factory and configuration.
 """
 from fastapi import FastAPI, APIRouter
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 import logging
 import logging.config
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 
 # Load environment variables from .env file
 load_dotenv()
@@ -112,6 +114,14 @@ def create_app() -> FastAPI:
             "docs": "/api/docs",
             "health": "/health"
         }
+    
+    # ✅ Mount frontend static files (for single web service deployment)
+    frontend_dist_path = Path(__file__).parent.parent.parent / "frontend" / "dist"
+    if frontend_dist_path.exists():
+        app.mount("/", StaticFiles(directory=str(frontend_dist_path), html=True), name="static")
+        logger.info(f"Frontend static files mounted from: {frontend_dist_path}")
+    else:
+        logger.warning(f"Frontend dist directory not found at: {frontend_dist_path}")
     
     logger.info("FastAPI application created successfully")
     

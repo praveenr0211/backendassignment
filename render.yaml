@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: task-management-api
+    name: task-management-app
     env: python
     region: oregon
     plan: free
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r backend/requirements.txt && cd frontend && npm install && npm run build
     startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000 backend.app.main:app
     envVars:
       - key: PYTHON_VERSION
@@ -20,20 +20,11 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: CORS_ORIGINS
-        value: "https://task-management-ui.onrender.com,https://www.task-management-ui.onrender.com"
+        value: "https://task-management-app.onrender.com,https://www.task-management-app.onrender.com"
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
         value: "30"
       - key: REFRESH_TOKEN_EXPIRE_DAYS
         value: "7"
-
-  - type: static_site
-    name: task-management-ui
-    env: static
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: frontend/dist
-    envVars:
-      - key: VITE_API_URL
-        value: "https://task-management-api.onrender.com"
 
 databases:
   - name: task_manager_db

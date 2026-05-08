@@ -16,10 +16,13 @@ class Settings:
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     
     # Database configuration
-    DATABASE_URL: str = os.getenv(
+    _raw_database_url: str = os.getenv(
         "DATABASE_URL",
         "postgresql://user:password@localhost:5432/task_manager"
     )
+    if _raw_database_url.startswith("postgres://"):
+        _raw_database_url = _raw_database_url.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL: str = _raw_database_url
     
     # JWT configuration
     SECRET_KEY: str = os.getenv(

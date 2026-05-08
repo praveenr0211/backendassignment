@@ -1,7 +1,7 @@
 """
 Pydantic schemas for request and response validation.
 """
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, ConfigDict
 from datetime import datetime
 from typing import Optional, List, Generic, TypeVar
 from enum import Enum
@@ -43,14 +43,15 @@ class UserRegister(BaseModel):
             raise ValueError("Password must contain at least one uppercase letter")
         return v
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "name": "John Doe",
                 "email": "john@example.com",
                 "password": "SecurePass123"
             }
         }
+    )
 
 
 class UserLogin(BaseModel):
@@ -58,13 +59,14 @@ class UserLogin(BaseModel):
     email: EmailStr = Field(..., description="User email address")
     password: str = Field(..., description="User password")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "email": "john@example.com",
                 "password": "SecurePass123"
             }
         }
+    )
 
 
 class TokenResponse(BaseModel):
@@ -110,8 +112,7 @@ class UserResponse(UserBase):
     created_at: datetime = Field(..., description="User creation timestamp")
     updated_at: datetime = Field(..., description="User update timestamp")
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # ==================== Task Schemas ====================
@@ -144,8 +145,7 @@ class TaskResponse(TaskBase):
     created_at: datetime = Field(..., description="Task creation timestamp")
     updated_at: datetime = Field(..., description="Task update timestamp")
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TaskWithUser(TaskResponse):
@@ -193,11 +193,12 @@ class ErrorResponse(BaseModel):
     message: str = Field(..., description="Error message")
     detail: Optional[dict] = Field(None, description="Additional error details")
     
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "status_code": 400,
                 "message": "Validation error",
                 "detail": {"field": "Invalid value"}
             }
         }
+    )

@@ -155,6 +155,52 @@ Services:
 - PostgreSQL: `localhost:5432`
 - Redis: `localhost:6379`
 
+## 🚀 Deploying on Render
+
+### 1. Create a new Web Service
+
+1. Push your repo to GitHub.
+2. In Render, click **New +** → **Web Service** and select your repo.
+3. Set the **Root Directory** to `backend`.
+
+### 2. Build and Start Commands
+
+Use the following commands:
+
+```bash
+# Build Command
+pip install -r requirements.txt
+
+# Start Command
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+### 3. Environment Variables
+
+Add these in Render → **Environment**:
+
+```
+DATABASE_URL=postgresql://user:password@host:5432/task_manager
+SECRET_KEY=your-secure-secret
+DEBUG=False
+ENVIRONMENT=production
+CORS_ORIGINS=https://your-frontend-url.onrender.com
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+REFRESH_TOKEN_EXPIRE_DAYS=7
+```
+
+### 4. Create PostgreSQL on Render
+
+1. In Render, click **New +** → **PostgreSQL**.
+2. Copy the **Internal Database URL**.
+3. Paste it as `DATABASE_URL` in the backend service environment variables.
+
+### 5. Redeploy After Changes
+
+1. Push commits to your main branch.
+2. Render will redeploy automatically if auto-deploy is enabled.
+3. For manual redeploy, click **Manual Deploy** → **Deploy latest commit**.
+
 ## 🧪 Testing
 
 ```bash
